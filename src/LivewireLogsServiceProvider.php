@@ -4,7 +4,6 @@ namespace JeffersonGoncalves\LivewireLogs;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Livewire\Component;
-use Livewire\Mechanisms\HandleRequests\HandleRequests;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -29,11 +28,6 @@ class LivewireLogsServiceProvider extends PackageServiceProvider
         if (! config('livewire-logs.enabled')) {
             return;
         }
-
-        // Livewire's boot() resolves app($this::class), so bind both names to the same instance.
-        $handler = ReportingHandleRequests::from($this->app->make(HandleRequests::class));
-        $this->app->instance(HandleRequests::class, $handler);
-        $this->app->instance(ReportingHandleRequests::class, $handler);
 
         on('hydrate', fn (Component $component, $memo) => app(ComponentTracker::class)->hydrate($component, (array) $memo));
         on('update', fn (Component $component, $path, $value) => app(ComponentTracker::class)->update($component, (string) $path, $value));

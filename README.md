@@ -1,13 +1,13 @@
 <div class="filament-hidden">
 
-![Livewire Logs](https://raw.githubusercontent.com/jeffersongoncalves/livewire-logs/1.x/art/jeffersongoncalves-livewire-logs.png)
+![Livewire Logs](https://raw.githubusercontent.com/jeffersongoncalves/livewire-logs/2.x/art/jeffersongoncalves-livewire-logs.png)
 
 </div>
 
 # Livewire Logs
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/jeffersongoncalves/livewire-logs.svg?style=flat-square)](https://packagist.org/packages/jeffersongoncalves/livewire-logs)
-[![Tests](https://img.shields.io/github/actions/workflow/status/jeffersongoncalves/livewire-logs/tests.yml?branch=1.x&label=tests&style=flat-square)](https://github.com/jeffersongoncalves/livewire-logs/actions?query=workflow%3ATests+branch%3A1.x)
+[![Tests](https://img.shields.io/github/actions/workflow/status/jeffersongoncalves/livewire-logs/tests.yml?branch=2.x&label=tests&style=flat-square)](https://github.com/jeffersongoncalves/livewire-logs/actions?query=workflow%3ATests+branch%3A2.x)
 [![Total Downloads](https://img.shields.io/packagist/dt/jeffersongoncalves/livewire-logs.svg?style=flat-square)](https://packagist.org/packages/jeffersongoncalves/livewire-logs)
 
 When a Livewire update throws a `TypeError` in production, Livewire answers `419` ("This page has expired") and nothing reaches your logs: Livewire 3 never reports the error, and Livewire 4 reports it without saying which component failed.
@@ -66,8 +66,9 @@ return [
 
 ## How it works
 
-- Livewire 3 (`1.x`): replaces Livewire's `HandleRequests` mechanism with a copy whose `handleUpdate()` calls `report()` before `abort(419)`, like Livewire 4 does.
-- Both versions: listens to Livewire's `hydrate`, `update`, `call` and `destroy` hooks to remember the component being updated, and adds it to the exception context through `buildContextUsing()`.
+- Livewire 4 already calls `report()` before `abort(419)`; this branch only adds the component context. Livewire 4 still answers `419` without reporting when a request sets a typed public property to a value of the wrong type (it treats that as a bot probing the component); that stays as is.
+- Livewire 3 (`1.x`) also replaces Livewire's `HandleRequests` mechanism with a copy whose `handleUpdate()` reports the error.
+- Both versions listen to Livewire's `hydrate`, `update`, `call` and `destroy` hooks to remember the component being updated, and adds it to the exception context through `buildContextUsing()`.
 
 ## Testing
 
