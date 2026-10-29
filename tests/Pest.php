@@ -1,3 +1,5 @@
 <?php
 
-uses(JeffersonGoncalves\LivewireLogs\Tests\TestCase::class)->in('Feature', 'Unit');
+use JeffersonGoncalves\LivewireLogs\Tests\TestCase;
+
+uses(TestCase::class)->in('Feature', 'Unit');
