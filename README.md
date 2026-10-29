@@ -42,7 +42,11 @@ The `livewire` context is added to **every** exception reported during a Livewir
 ## Installation
 
 ```bash
-composer require jeffersongoncalves/livewire-logs
+# Livewire 4
+composer require jeffersongoncalves/livewire-logs:^2.0
+
+# Livewire 3
+composer require jeffersongoncalves/livewire-logs:^1.0
 ```
 
 That's it. The user still gets the `419` response; only the logging changes. With `APP_DEBUG=true` the `TypeError` is thrown as before.
