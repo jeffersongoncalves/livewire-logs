@@ -29,4 +29,32 @@ return [
 
     'value_max_length' => 200,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Sensitive keys
+    |--------------------------------------------------------------------------
+    |
+    | When values are included, a property whose path contains one of these
+    | keys (case, "_", "-" and "." ignored: "form.currentPassword" matches
+    | "password") is logged as "[redacted]". Array values are redacted key by
+    | key, at any depth.
+    |
+    */
+
+    'sensitive_keys' => [
+        'password',
+        'passwd',
+        'secret',
+        'token',
+        'api_key',
+        'private_key',
+        'credential',
+        'authorization',
+        'cookie',
+        'session',
+        'card_number',
+        'cvv',
+        'cvc',
+    ],
+
 ];

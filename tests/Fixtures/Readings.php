@@ -10,6 +10,11 @@ class Readings extends Component
 
     public string $reading = '';
 
+    public string $currentPassword = '';
+
+    /** @var array<string, mixed> */
+    public array $form = [];
+
     public function save(): void
     {
         $this->store('not a number');

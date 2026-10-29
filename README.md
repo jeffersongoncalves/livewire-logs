@@ -61,7 +61,19 @@ return [
     'include_values' => env('LIVEWIRE_LOGS_INCLUDE_VALUES', false),
 
     'value_max_length' => 200,
+
+    // With values on, these keys are logged as "[redacted]"...
+    'sensitive_keys' => ['password', 'passwd', 'secret', 'token', 'api_key', 'private_key', 'credential', 'authorization', 'cookie', 'session', 'card_number', 'cvv', 'cvc'],
 ];
+```
+
+With `include_values` on, a property whose path contains a sensitive key is logged as `[redacted]`. Matching ignores case, `_`, `-` and `.`, so `form.currentPassword` matches `password` and `apiToken` matches `token`. Array values are redacted key by key, at any depth:
+
+```json
+"updates": {
+    "currentPassword": "string [redacted]",
+    "form": "array {\"name\":\"Ana\",\"api_token\":\"[redacted]\"}"
+}
 ```
 
 ## How it works

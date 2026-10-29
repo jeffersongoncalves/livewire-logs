@@ -63,6 +63,23 @@ it('logs the updated value only when asked to', function () {
     )->once();
 });
 
+it('redacts sensitive properties and nested keys', function () {
+    config(['livewire-logs.include_values' => true]);
+    Log::spy();
+
+    livewireUpdate(updates: [
+        'currentPassword' => 'hunter2',
+        'form' => ['name' => 'Ana', 'api_token' => 'abc123', 'card' => ['cvv' => '123']],
+        'reading' => 'abc',
+    ])->assertStatus(419);
+
+    Log::shouldHaveReceived('error')->withArgs(fn ($message, $context) => $context['livewire']['updates'] === [
+        'currentPassword' => 'string [redacted]',
+        'form' => 'array {"name":"Ana","api_token":"[redacted]","card":{"cvv":"[redacted]"}}',
+        'reading' => 'string abc',
+    ])->once();
+});
+
 it('leaves successful updates alone', function () {
     Log::spy();
 

@@ -11,6 +11,8 @@ use Livewire\Component;
  */
 class ComponentTracker
 {
+    public const REDACTED = '[redacted]';
+
     /** @var array<string, mixed>|null */
     protected ?array $current = null;
 
@@ -37,7 +39,7 @@ class ComponentTracker
         }
 
         $this->current['step'] = "update: {$path}";
-        $this->current['updates'][$path] = $this->describe($value);
+        $this->current['updates'][$path] = $this->describe($path, $value);
     }
 
     public function call(Component $component, string $method): void
@@ -89,7 +91,7 @@ class ComponentTracker
         return $this->current !== null && $this->current['id'] === $component->getId();
     }
 
-    protected function describe(mixed $value): string
+    protected function describe(string $path, mixed $value): string
     {
         $type = get_debug_type($value);
 
@@ -97,8 +99,44 @@ class ComponentTracker
             return $type;
         }
 
+        if ($this->isSensitive($path)) {
+            return $type.' '.self::REDACTED;
+        }
+
+        $value = $this->redact($value);
         $encoded = is_string($value) ? $value : json_encode($value, JSON_PARTIAL_OUTPUT_ON_ERROR);
 
         return $type.' '.Str::limit((string) $encoded, (int) config('livewire-logs.value_max_length', 200));
+    }
+
+    protected function redact(mixed $value): mixed
+    {
+        if (! is_array($value)) {
+            return $value;
+        }
+
+        foreach ($value as $key => $item) {
+            $value[$key] = $this->isSensitive((string) $key) ? self::REDACTED : $this->redact($item);
+        }
+
+        return $value;
+    }
+
+    /**
+     * True when any segment of the path (e.g. "form.currentPassword") contains a sensitive key.
+     */
+    protected function isSensitive(string $path): bool
+    {
+        $normalized = preg_replace('/[^a-z0-9]/', '', strtolower($path));
+
+        foreach ((array) config('livewire-logs.sensitive_keys', []) as $key) {
+            $key = preg_replace('/[^a-z0-9]/', '', strtolower((string) $key));
+
+            if ($key !== '' && str_contains((string) $normalized, (string) $key)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
