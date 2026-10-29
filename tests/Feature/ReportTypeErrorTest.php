@@ -34,22 +34,32 @@ it('reports the TypeError hidden behind the 419 with the component context', fun
 it('logs the type of the updated property', function () {
     Log::spy();
 
-    livewireUpdate(updates: ['value' => 'abc'])->assertStatus(419);
+    livewireUpdate(updates: ['reading' => 'abc'])->assertStatus(419);
 
     Log::shouldHaveReceived('error')->withArgs(function ($message, $context) {
-        return $context['livewire']['step'] === 'update: value'
-            && $context['livewire']['updates'] === ['value' => 'string'];
+        return $context['livewire']['step'] === 'update: reading'
+            && $context['livewire']['updates'] === ['reading' => 'string'];
     })->once();
+});
+
+it('reports a typed property set to a value of the wrong type', function () {
+    Log::spy();
+
+    livewireUpdate(updates: ['value' => 'abc'])->assertStatus(419);
+
+    Log::shouldHaveReceived('error')->withArgs(
+        fn ($message, $context) => $context['livewire']['step'] === 'update: value'
+    )->once();
 });
 
 it('logs the updated value only when asked to', function () {
     config(['livewire-logs.include_values' => true]);
     Log::spy();
 
-    livewireUpdate(updates: ['value' => 'abc'])->assertStatus(419);
+    livewireUpdate(updates: ['reading' => 'abc'])->assertStatus(419);
 
     Log::shouldHaveReceived('error')->withArgs(
-        fn ($message, $context) => $context['livewire']['updates'] === ['value' => 'string abc']
+        fn ($message, $context) => $context['livewire']['updates'] === ['reading' => 'string abc']
     )->once();
 });
 
