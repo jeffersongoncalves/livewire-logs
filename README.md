@@ -42,10 +42,6 @@ The `livewire` context is added to **every** exception reported during a Livewir
 ## Installation
 
 ```bash
-# Livewire 4
-composer require jeffersongoncalves/livewire-logs:^2.0
-
-# Livewire 3
 composer require jeffersongoncalves/livewire-logs:^1.0
 ```
 
